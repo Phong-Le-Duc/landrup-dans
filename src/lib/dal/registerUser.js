@@ -1,5 +1,7 @@
 "use server";
 
+import { cookies } from "next/headers";
+
 export async function registerUser(data) {
     try {
         const body = new URLSearchParams();
@@ -20,10 +22,48 @@ export async function registerUser(data) {
 
         const responseData = await response.json();
 
+        if (!response.ok) {
+            return {
+                ok: false,
+                status: response.status,
+                data: responseData,
+            };
+        }
+
+        const loginResponse = await fetch("http://localhost:4000/auth/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: data.username,
+                password: data.password,
+            }),
+        });
+
+        const authData = await loginResponse.json();
+
+        if (!loginResponse.ok || !authData?.token) {
+            return {
+                ok: false,
+                status: loginResponse.status,
+                data: authData || { message: "Kunne ikke logge ind efter oprettelse." },
+            };
+        }
+
+        const cookieStore = await cookies();
+        cookieStore.set("token", authData.token, {
+            httpOnly: true,
+            sameSite: "lax",
+            path: "/",
+        });
+        cookieStore.set("username", data.username, { path: "/" });
+        cookieStore.set("role", authData.role || data.role || "default", { path: "/" });
+
         return {
-            ok: response.ok,
+            ok: true,
             status: response.status,
-            data: responseData,
+            data: { ...responseData, ...authData },
         };
     } catch (error) {
         console.error("Error submitting register request:", error);

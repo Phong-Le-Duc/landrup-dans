@@ -9,7 +9,13 @@ export async function sendContactMessage(data) {
             },
             body: JSON.stringify(data),
         });
-        return response;
+        const responseData = await response.json();
+
+        return {
+            ok: response.ok,
+            status: response.status,
+            data: responseData,
+        };
     } catch (error) {
         console.error("Error submitting contact message:", error);
         throw error;
