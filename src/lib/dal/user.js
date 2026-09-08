@@ -1,5 +1,6 @@
 "use server";
 import { cookies } from "next/headers";
+import { API_BASE_URL } from "@/lib/api";
 
 export async function getCurrentUser() {
     const cookieStore = await cookies()
@@ -10,7 +11,7 @@ export async function getCurrentUser() {
 
 
 
-    const res = await fetch(`http://localhost:4000/api/v1/users/${userId}`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
     })

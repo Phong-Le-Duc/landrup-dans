@@ -1,8 +1,10 @@
 "use server";
 
-export async function getAllActivities() {
+import { API_BASE_URL } from "@/lib/api";
+
+export async function getActivities() {
     try {
-        const res = await fetch("http://localhost:4000/api/v1/activities");
+        const res = await fetch(`${API_BASE_URL}/api/v1/activities`);
 
         if (!res.ok) {
             throw new Error(res.statusText || "Something went wrong");
@@ -24,6 +26,10 @@ export async function getAllActivities() {
     }
 }
 
+export async function getAllActivities() {
+    return getActivities();
+}
+
 export async function getActivityById(id) {
     try {
         if (!id) {
@@ -34,7 +40,7 @@ export async function getActivityById(id) {
             throw new Error("ID is not a number");
         }
 
-        const res = await fetch(`http://localhost:4000/api/v1/activities/${id}`);
+        const res = await fetch(`${API_BASE_URL}/api/v1/activities/${id}`);
         if (!res.ok) {
             if (res.status === 404) {
                 return { data: null };
@@ -63,7 +69,7 @@ export async function addUserActivity(userId, activityId, token) {
     if (!token) throw new Error("Missing token");
 
     const res = await fetch(
-        `http://localhost:4000/api/v1/users/${userId}/activities/${activityId}`,
+        `${API_BASE_URL}/api/v1/users/${userId}/activities/${activityId}`,
         {
             method: "POST",
             headers: {
@@ -86,7 +92,7 @@ export async function deleteUserActivity(userId, activityId, token) {
     if (!token) throw new Error("Missing token");
 
     const res = await fetch(
-        `http://localhost:4000/api/v1/users/${userId}/activities/${activityId}`,
+        `${API_BASE_URL}/api/v1/users/${userId}/activities/${activityId}`,
         {
             method: "DELETE",
             headers: {
@@ -107,7 +113,7 @@ export async function getUserActivities(userId, token) {
     if (!userId) throw new Error("Missing userId");
     if (!token) throw new Error("Missing token");
 
-    const res = await fetch(`http://localhost:4000/api/v1/users/${userId}/activities`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/users/${userId}/activities`, {
         headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -127,7 +133,7 @@ export async function getUserActivities(userId, token) {
 
 
 export async function createActivity(activityData) {
-    const res = await fetch("http://localhost:4000/api/v1/activities", {
+    const res = await fetch(`${API_BASE_URL}/api/v1/activities`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(activityData),

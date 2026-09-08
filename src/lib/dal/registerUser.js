@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { API_BASE_URL } from "@/lib/api";
 
 export async function registerUser(data) {
     try {
@@ -12,7 +13,7 @@ export async function registerUser(data) {
         body.set("age", String(data.age));
         body.set("role", data.role || "default");
 
-        const response = await fetch("http://localhost:4000/api/v1/users", {
+        const response = await fetch(`${API_BASE_URL}/api/v1/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -30,7 +31,7 @@ export async function registerUser(data) {
             };
         }
 
-        const loginResponse = await fetch("http://localhost:4000/auth/token", {
+        const loginResponse = await fetch(`${API_BASE_URL}/auth/token`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

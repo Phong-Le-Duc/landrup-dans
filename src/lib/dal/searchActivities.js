@@ -1,10 +1,11 @@
 "use server";
 
+import { API_BASE_URL } from "@/lib/api";
 
 export async function searchActivities(query) {
     try {
         const res = await fetch(
-            `http://localhost:4000/api/v1/activities?query=${query}`
+            `${API_BASE_URL}/api/v1/activities?query=${query}`
         );
 
         if (!res.ok) {
