@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 import { IoChevronForwardCircleOutline } from "react-icons/io5";
 import { useState } from "react";
@@ -28,11 +27,10 @@ export default function TestimonialCarousel({ testimonials }) {
                 <div className="relative p-6 flex flex-col items-center">
 
                     <div className="absolute inset-0 -z-10">
-                        <Image
+                        <img
                             src="/assets/detsigerkunderne.jpg"
                             alt="Testimonial background"
-                            fill
-                            className="object-cover"
+                            className="h-full w-full object-cover"
                         />
                     </div>
 
