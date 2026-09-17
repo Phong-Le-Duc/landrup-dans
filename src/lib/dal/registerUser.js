@@ -1,6 +1,4 @@
-"use server";
-
-import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 import { API_BASE_URL } from "@/lib/api";
 
 export async function registerUser(data) {
@@ -52,14 +50,12 @@ export async function registerUser(data) {
             };
         }
 
-        const cookieStore = await cookies();
-        cookieStore.set("token", authData.token, {
-            httpOnly: true,
+        Cookies.set("token", authData.token, {
             sameSite: "lax",
             path: "/",
         });
-        cookieStore.set("username", data.username, { path: "/" });
-        cookieStore.set("role", authData.role || data.role || "default", { path: "/" });
+        Cookies.set("username", data.username, { path: "/" });
+        Cookies.set("role", authData.role || data.role || "default", { path: "/" });
 
         return {
             ok: true,
@@ -68,6 +64,10 @@ export async function registerUser(data) {
         };
     } catch (error) {
         console.error("Error submitting register request:", error);
-        throw error;
+        return {
+            ok: false,
+            status: 500,
+            data: { message: "Noget gik galt på serveren, prøv igen senere." },
+        };
     }
 }
