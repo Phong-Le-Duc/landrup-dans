@@ -1,6 +1,24 @@
 "use server";
 
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, normalizeAssetUrl } from "@/lib/api";
+
+function normalizeActivityAssets(activity) {
+    if (!activity) return activity;
+
+    if (activity.asset && typeof activity.asset.url === "string") {
+        activity.asset.url = normalizeAssetUrl(activity.asset.url);
+    }
+
+    return activity;
+}
+
+function normalizeActivitiesPayload(payload) {
+    if (Array.isArray(payload)) {
+        return payload.map(normalizeActivityAssets);
+    }
+
+    return normalizeActivityAssets(payload);
+}
 
 export async function getActivities() {
     try {
@@ -13,7 +31,7 @@ export async function getActivities() {
         const contentType = res.headers.get("content-type") || "";
         if (contentType.includes("application/json")) {
             const data = await res.json();
-            return { data };
+            return { data: normalizeActivitiesPayload(data) };
         }
 
         throw new Error("Not JSON");
@@ -50,7 +68,8 @@ export async function getActivityById(id) {
 
         const contentType = res.headers.get("content-type") || "";
         if (contentType.includes("application/json")) {
-            return { data: await res.json() };
+            const data = await res.json();
+            return { data: normalizeActivitiesPayload(data) };
         }
 
         throw new Error("Not JSON");
@@ -124,7 +143,8 @@ export async function getUserActivities(userId, token) {
 
     const contentType = res.headers.get("content-type") || "";
     if (contentType.includes("application/json")) {
-        return { data: await res.json() };
+        const data = await res.json();
+        return { data: normalizeActivitiesPayload(data) };
     }
 
     throw new Error("Not JSON");
