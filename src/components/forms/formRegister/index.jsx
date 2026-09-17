@@ -12,6 +12,7 @@ export default function FormRegister() {
     const router = useRouter();
 
     async function handleRegister(event) {
+        console.log("HANDLE REGISTER FIRED");
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData);
